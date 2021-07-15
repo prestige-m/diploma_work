@@ -10,7 +10,7 @@ class FaceDetector:
     facenet_model = None
 
     def __init__(self, model_directory: str = "model"):
-        current_dir = os.getcwd()
+        current_dir = os.path.dirname(os.path.abspath(__file__))
         prototxt_path = os.path.sep.join([current_dir, model_directory, "deploy.prototxt"])
         weights_path = os.path.sep.join([current_dir, model_directory, "res10_300x300_ssd_iter_140000.caffemodel"])
         self.facenet_model = cv2.dnn.readNet(prototxt_path, weights_path)
@@ -46,8 +46,8 @@ class FaceDetector:
                 face_frame = cv2.cvtColor(face_frame, cv2.COLOR_BGR2RGB)
                 face_frame = cv2.resize(face_frame, (224, 224))
                 face_frame = img_to_array(face_frame)
-                face_frame = np.expand_dims(face_frame, axis=0)
                 face_frame = preprocess_input(face_frame)
+                face_frame = np.expand_dims(face_frame, axis=0)
 
                 face_boxes.append({'face_frame': face_frame, 'rect': (startX, startY, endX - startX, endY - startY),
                                     'confidence': confidence})
