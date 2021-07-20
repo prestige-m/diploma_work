@@ -9,28 +9,6 @@ import math
 from PIL import Image, ImageFile
 
 
-def align_face(face, landmarks):
-    left_eye_center2 = (0.5 * (landmarks[36][0] + landmarks[39][0]), 0.5 * (landmarks[36][1] + landmarks[39][1]))
-    right_eye_center2 = (0.5 * (landmarks[42][0] + landmarks[45][0]), 0.5 * (landmarks[42][1] + landmarks[45][1]))
-
-    left_eye_center = 1./ 2 * (landmarks[36] + landmarks[39])
-    right_eye_center = 1./ 2 * (landmarks[42] + landmarks[45])
-
-    dx = right_eye_center[0] - left_eye_center[0]
-    dy = right_eye_center[1] - left_eye_center[1]
-    angle = math.atan2(dy, dx) * 180. / math.pi
-
-
-    eye_center = ((landmarks[36][0] + landmarks[45][0]) * 1. / 2, (landmarks[36][1] + landmarks[45][1]) * 1. / 2)
-    # dx = landmarks[45][0] - landmarks[36][0]
-    # dy = landmarks[45][1] - landmarks[36][1]
-    # angle = math.atan2(dy, dx) * 180. / math.pi
-    RotateMatrix = cv2.getRotationMatrix2D(eye_center, angle, scale=1)
-    face_aligned = cv2.warpAffine(face, RotateMatrix, (face.shape[0], face.shape[1]))
-
-    return face_aligned
-
-
 class FaceOverlay:
 
     def __init__(self):
@@ -99,11 +77,6 @@ class FaceOverlay:
         angle = -1.0 * math.atan2(dy, dx) * 180. / math.pi
         rotated_mask_img = mask_img.rotate(angle, expand=True)
 
-        #ret = align_face(np.array(self.face_img), face_landmarks)
-
-        # calculate mask location
-        # lips_point = 0.5 * (np.array(face_landmarks[57]) + np.array(face_landmarks[8]))
-        # center_x, center_y = lips_point[0], lips_point[1]
 
         lips_point = 0.5 * (np.array(face_landmarks[62]) + np.array(face_landmarks[66]))
         center_x, center_y = lips_point[0], lips_point[1]
